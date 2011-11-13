@@ -1,0 +1,62 @@
+<!--
+Time log
+Sat 11/12 - 22:00 - 04:00 (6h)
+- 622 LOC : ~103 lines/hr
+- construction interface ready
+- can make matrix, but it's not square
+- next steps: computation, display computed forces
+-->
+
+<html>
+<head>
+<title>DCL Truss Solver</title>
+
+<script src="lib/jquery-1.6.2.min.js" type="text/javascript"></script>
+<script src="lib/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="lib/dark-hive/jquery-ui-1.8.16.custom.css" />
+<script src="lib/raphael-min.js" type="text/javascript"></script>
+<script src="lib/underscore.js" type="text/javascript"></script>
+
+<style>
+html {
+  background: #333;
+  color: #f0f0f0;
+}
+button.active {
+  background: red !important;
+}
+</style>
+</head>
+
+<body>
+<div id="controls">
+<span id="toolbar" class="ui-widget-header ui-corner-all">
+<button id="arrow-btn">Select</button>
+<button id="add-node-btn">Add Node</button>
+<button id="add-member-btn">Add Member</button>
+<button id="add-support-btn">Add Support</button>
+<button id="add-load-btn">Add Load</button>
+<button id="compute-btn">Compute!</button>
+</span>
+</div>
+
+<div id="canvas"></div>
+<div id="console1"></div>
+<div id="console2"></div>
+
+<script>
+var w = 800;
+var h = 800;
+var gridspace = 50;
+
+function showElems() {
+  $('#console1').html(_.size(members)+" members, "+_.size(nodes)+" nodes, "+_.size(supports)+" supports, "+_.size(loads)+" loads");
+}
+setInterval(showElems, 100);
+</script>
+<script type="text/javascript" src="js/model.js"></script>
+<script type="text/javascript" src="js/ui.js"></script>
+<script type="text/javascript" src="js/compute.js"></script>
+
+</body>
+</html>
