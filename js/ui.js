@@ -5,7 +5,7 @@ var mode = 'select';
 function drawGrid() {
   var bg = paper.rect(0, 0, w, h);
   bg.attr({fill: '#555'});
-  bg.click(bgClick);
+  //bg.click(bgClick);
 
   var st = paper.set();
   for (var x = 0; x <= w; x += gridspace) {
@@ -15,6 +15,10 @@ function drawGrid() {
     st.push(paper.path('M 0 '+y+' L '+w+' '+y));
   }
   st.attr({stroke: '#ccc', 'stroke-width': 1});
+
+  var overlay = paper.rect(0, 0, w, h);
+  overlay.attr({fill: '#000', 'fill-opacity': 0});
+  overlay.click(bgClick);
 }
 
 function bgClick(event) {
@@ -49,10 +53,9 @@ function nodeClick(event, x, y) {
       if (node.supportType & 2) {
         createSupport(node, false);
       }
-
-      //recompute();
       break;
   }
+  recompute();
 }
 
 function memberClick(event, x, y) {
@@ -64,6 +67,7 @@ function memberClick(event, x, y) {
       }
       break;
   }
+  recompute();
 }
 
 function loadClick(event, x, y) {
@@ -75,6 +79,7 @@ function loadClick(event, x, y) {
       }
       break;
   }
+  recompute();
 }
 
 var ghostMember = null;
@@ -102,6 +107,7 @@ function nodeDragStart(x, y, event) {
         'stroke-width': 5
       });
       ghostMember.dclNode1 = node;
+      nodesToFront();
 
       break;
 
@@ -143,6 +149,7 @@ function nodeDragEnd(event) {
       ghostLoad.textEl.remove();
       break;
   }
+  recompute();
 }
 function nodeDragMove(dx, dy, x, y, event) {
   var node = nodes[this.dclSerial];
@@ -192,13 +199,105 @@ function nodeDragMove(dx, dy, x, y, event) {
 
       break;
   }
+
+  recompute();
 }
+
+function createLoadEls(node, val, angle) {
+  var dx = Math.cos(angle) * val * PIXELS_PER_UNIT_LOAD;
+  var dy = Math.sin(angle) * val * PIXELS_PER_UNIT_LOAD;
+
+  var el = paper.path([
+    ['M', node.x, node.y],
+    ['l', dx, dy]
+  ]);
+  el.attr({
+    'stroke-width': 5,
+    'stroke': '#f00',
+    'arrow-end': 'classic',
+  });
+  var textEl = paper.text(node.x+dx, node.y+dy, val + " N, " + humanAngle(angle));
+  textEl.attr({
+    'fill': '#fff',
+    'font-size': 16
+  });
+  textEl = createShadowedSet(textEl);
+
+  nodesToFront();
+  return {el: el, textEl: textEl};
+}
+
+function createShadowedSet(el, offset, blur, fill) {
+  if (!offset) offset = 1;
+  if (!blur) blur = 3;
+  if (!fill) fill = '#000';
+
+  var topEl = el.clone();
+  el.attr({fill: fill});
+  el.translate(offset, offset);
+  el.blur(blur);
+
+  var set = paper.set();
+  set.push(el, topEl);
+  return set;
+}
+
+function memberMidpoint(member) {
+  return [(member.node1.x + member.node2.x)/2,
+    (member.node1.y + member.node2.y)/2];
+}
+
+function updateMemberLabel(member, label) {
+  if (member.textEl)
+    member.textEl.remove();
+  var mid = memberMidpoint(member);
+  var textEl = paper.text(mid[0], mid[1], label);
+  textEl.attr({
+    'fill': '#fff',
+    'font-size': 16
+  });
+  member.textEl = createShadowedSet(textEl);
+}
+function updateSupportLabel(support, label) {
+  if (support.textEl)
+    support.textEl.remove();
+  var pt = support.vertical
+    ? [support.node.x, support.node.y - 50]
+    : [support.node.x + 50, support.node.y];
+  var textEl = paper.text(pt[0], pt[1], label);
+  textEl.attr({
+    'fill': '#fff',
+    'font-size': 16
+  });
+  support.textEl = createShadowedSet(textEl);
+}
+
+
+function nodesToFront() {
+  _.each(members, function(x) {
+    x.el.toFront();
+    if (x.textEl) x.textEl.toFront();
+  });
+  _.each(supports, function(x) {
+    x.el.toFront();
+  });
+  _.each(loads, function(x) {
+    x.el.toFront();
+    if (x.textEl) x.textEl.toFront();
+  });
+  _.each(supports, function(x) {
+    if (x.textEl) x.textEl.toFront();
+  });
+  _.each(nodes, function(node) {
+    node.el.toFront();
+  });
+}
+
 
 $(function(){
   paper = Raphael('canvas', w, h);
   drawGrid();
 });
-
 
 $(function() {
   $('#arrow-btn').button().click(function() {
@@ -215,10 +314,6 @@ $(function() {
   });
   $('#add-load-btn').button().click(function() {
     setSelection('add-load-btn');
-  });
-
-  $('#compute-btn').button().click(function() {
-    recompute();
   });
 
   function setSelection(name) {

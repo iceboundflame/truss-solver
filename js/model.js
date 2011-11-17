@@ -6,7 +6,7 @@ var serial = 1000;
 
 function createNode(x, y) {
   var s = ++serial;
-  var el = paper.circle(x, y, 20);
+  var el = paper.circle(x, y, 10);
   el.attr('fill','yellow');
   el.dclSerial = s;
   el.dclType = 'node';
@@ -52,6 +52,7 @@ function createMember(node1, node2) {
   var el = paper.path(memberPath(node1, node2));
   el.attr({
     'stroke-width': 5,
+    'stroke-linecap': 'round',
     'stroke': '#eee'
   });
   el.dclSerial = s;
@@ -66,11 +67,14 @@ function createMember(node1, node2) {
   node2.members[s] = member;
 
   el.click(memberClick);
+  nodesToFront();
 }
 function deleteMember(member) {
   delete member.node1.members[member.serial];
   delete member.node2.members[member.serial];
   member.el.remove();
+  if (member.textEl)
+    member.textEl.remove();
   delete members[member.serial];
 }
 
@@ -95,10 +99,14 @@ function createSupport(node, vertical) {
     vertical: vertical
   };
   node.supports[s] = support;
+
+  nodesToFront();
 }
 function deleteSupport(support) {
   delete support.node.supports[support.serial];
   support.el.remove();
+  if (support.textEl)
+    support.textEl.remove();
   delete supports[support.serial];
 }
 
@@ -116,8 +124,10 @@ function humanAngle(angle) {
 function createLoad(node, val, angle) {
   var s = ++serial;
 
-  var dx = Math.cos(angle) * val * PIXELS_PER_UNIT_LOAD;
-  var dy = Math.sin(angle) * val * PIXELS_PER_UNIT_LOAD;
+  var compX = Math.cos(angle) * val;
+  var compY = Math.sin(angle) * val;
+  var dx = compX * PIXELS_PER_UNIT_LOAD;
+  var dy = compY * PIXELS_PER_UNIT_LOAD;
 
   var els = createLoadEls(node, val, angle);
   var el = els.el, textEl = els.textEl;
@@ -130,8 +140,8 @@ function createLoad(node, val, angle) {
     el: el,
     textEl: textEl,
     node: node,
-    compX: dx,
-    compY: dy,
+    compX: compX,
+    compY: compY,
     val: val,
     angle: angle
   };
@@ -139,32 +149,11 @@ function createLoad(node, val, angle) {
 
   el.click(loadClick);
   textEl.click(loadClick);
+  nodesToFront();
 }
 function deleteLoad(load) {
   delete load.node.loads[load.serial];
   load.el.remove();
   load.textEl.remove();
   delete loads[load.serial];
-}
-
-function createLoadEls(node, val, angle) {
-  var dx = Math.cos(angle) * val * PIXELS_PER_UNIT_LOAD;
-  var dy = Math.sin(angle) * val * PIXELS_PER_UNIT_LOAD;
-
-  var el = paper.path([
-    ['M', node.x, node.y],
-    ['l', dx, dy]
-  ]);
-  el.attr({
-    'stroke-width': 5,
-    'stroke': '#f00',
-    'arrow-end': 'classic',
-  });
-  var textEl = paper.text(node.x+dx, node.y+dy, val + " N, " + humanAngle(angle));
-  textEl.attr({
-    'fill': '#fff',
-    'font-size': 16
-  });
-
-  return {el: el, textEl: textEl};
 }
