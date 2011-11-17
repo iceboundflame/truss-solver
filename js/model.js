@@ -16,6 +16,8 @@ function createNode(x, y) {
     loads: {},
     supportType: 0
   };
+
+  nodesToFront();
 }
 
 function deleteNode(node) {
@@ -46,6 +48,8 @@ function createMember(node1, node2) {
   };
   node1.members[s] = member;
   node2.members[s] = member;
+
+  nodesToFront();
 }
 function deleteMember(member) {
   delete member.node1.members[member.serial];
@@ -66,6 +70,8 @@ function createSupport(node, vertical) {
     vertical: vertical
   };
   node.supports[s] = support;
+
+  nodesToFront();
 }
 function deleteSupport(support) {
   delete support.node.supports[support.serial];
@@ -93,6 +99,8 @@ function createLoad(node, val, angle) {
     angle: angle
   };
   node.loads[s] = load;
+
+  nodesToFront();
 }
 function deleteLoad(load) {
   delete load.node.loads[load.serial];

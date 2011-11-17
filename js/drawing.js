@@ -1,10 +1,32 @@
 var paper = null;
 
 var PIXELS_PER_UNIT_LOAD = 5;
+var SIZES = {
+  nodeRadius: 10,
+  memberWidth: 5,
+  support: 75,
+  supportWidth: 3,
+  loadWidth: 3
+};
+var COLORS = {
+  bg: '#555',
+  gridMajor: '#606060',
+  gridMinor: '#777',
+  member: '#999',
+  ghostMember: '#fff',
+  nodeFill: 'yellow',
+  nodeStroke: 'black',
+  support: '#79f',
+  load: '#f00',
+
+  loadForce: '#fff',
+  memberForce: '#fff',
+  supportForce: '#fff'
+};
 
 function drawGrid() {
   var bg = paper.rect(0, 0, w, h);
-  bg.attr({fill: '#555'});
+  bg.attr({fill: COLORS.bg});
 
   var minor = paper.set();
   for (var x = gridspace/2; x <= w; x += gridspace) {
@@ -13,7 +35,7 @@ function drawGrid() {
   for (var y = gridspace/2; y <= h; y += gridspace) {
     minor.push(paper.path('M 0 '+y+' H '+w));
   }
-  minor.attr({stroke: '#606060', 'fill-width': 1});
+  minor.attr({stroke: COLORS.gridMinor});
 
   var major = paper.set();
   for (var x = 0; x <= w; x += gridspace) {
@@ -22,7 +44,7 @@ function drawGrid() {
   for (var y = 0; y <= h; y += gridspace) {
     major.push(paper.path('M 0 '+y+' H '+w));
   }
-  major.attr({stroke: '#777', 'fill-width': 1});
+  major.attr({stroke: COLORS.gridMajor});
 
   var overlay = paper.rect(0, 0, w, h);
   overlay.attr({fill: '#000', 'fill-opacity': 0});
@@ -32,8 +54,8 @@ function drawGrid() {
 }
 
 function createNodeEl(x, y, s) {
-  var el = paper.circle(x, y, 10);
-  el.attr('fill','yellow');
+  var el = paper.circle(x, y, SIZES.nodeRadius);
+  el.attr({fill: COLORS.nodeFill, stroke: COLORS.nodeStroke});
   el.dclSerial = s;
   el.dclType = 'node';
   el.drag(nodeDragMove, nodeDragStart, nodeDragEnd);
@@ -49,32 +71,30 @@ function createNodeEl(x, y, s) {
 function createMemberEl(node1, node2, s) {
   var el = paper.path(memberPath(node1, node2));
   el.attr({
-    'stroke-width': 5,
+    'stroke-width': SIZES.memberWidth,
     'stroke-linecap': 'round',
-    'stroke': '#eee'
+    'stroke': COLORS.member
   });
   el.dclSerial = s;
   el.dclType = 'member';
 
   el.click(memberClick);
-  nodesToFront();
   return el;
 }
 
 function createSupportEl(node, vertical, s) {
   var el = paper.path([
     ['M', node.x, node.y],
-    vertical ? ['l', 0, -50] : ['l', 50, 0]
+    vertical ? ['l', 0, -SIZES.support] : ['l', SIZES.support, 0]
   ]);
   el.attr({
-    'stroke-width': 5,
-    'stroke': '#99f',
-    'arrow-end': 'classic',
+    'stroke-width': SIZES.supportWidth,
+    'stroke': COLORS.support,
+    'arrow-end': 'classic-wide-long'
   });
   el.dclSerial = s;
   el.dclType = 'support';
 
-  nodesToFront();
   return el;
 }
 
@@ -94,13 +114,13 @@ function createLoadEls(node, val, angle, s) {
     ['l', dx, dy]
   ]);
   el.attr({
-    'stroke-width': 3,
-    'stroke': '#f00',
-    'arrow-end': 'classic-wide-long',
+    'stroke-width': SIZES.loadWidth,
+    'stroke': COLORS.load,
+    'arrow-end': 'classic-wide-long'
   });
   var textEl = paper.text(node.x+dx, node.y+dy, val + " N, " + humanAngle(angle));
   textEl.attr({
-    'fill': '#fff',
+    'fill': COLORS.loadForce,
     'font-size': 16
   });
   textEl = createShadowedSet(textEl);
@@ -111,29 +131,28 @@ function createLoadEls(node, val, angle, s) {
   el.click(loadClick);
   textEl.click(loadClick);
 
-  nodesToFront();
   return {el: el, textEl: textEl};
 }
 
-function createShadowedSet(el, offset, blur, fill) {
-  if (!offset) offset = 1;
-  if (!blur) blur = 3;
-  if (!fill) fill = '#000';
+    function createShadowedSet(el, offset, blur, fill) {
+      if (!offset) offset = 1;
+      if (!blur) blur = 3;
+      if (!fill) fill = '#000';
 
-  var topEl = el.clone();
-  el.attr({fill: fill});
-  el.translate(offset, offset);
-  el.blur(blur);
+      var topEl = el.clone();
+      el.attr({fill: fill});
+      el.translate(offset, offset);
+      el.blur(blur);
 
-  var set = paper.set();
-  set.push(el, topEl);
-  return set;
-}
+      var set = paper.set();
+      set.push(el, topEl);
+      return set;
+    }
 
-function memberMidpoint(member) {
-  return [(member.node1.x + member.node2.x)/2,
-    (member.node1.y + member.node2.y)/2];
-}
+    function memberMidpoint(member) {
+      return [(member.node1.x + member.node2.x)/2,
+        (member.node1.y + member.node2.y)/2];
+    }
 
 function updateMemberLabel(member, label) {
   if (member.textEl)
@@ -141,7 +160,7 @@ function updateMemberLabel(member, label) {
   var mid = memberMidpoint(member);
   var textEl = paper.text(mid[0], mid[1], label);
   textEl.attr({
-    'fill': '#fff',
+    'fill': COLORS.memberForce,
     'font-size': 16
   });
   member.textEl = createShadowedSet(textEl);
@@ -154,31 +173,32 @@ function updateSupportLabel(support, label) {
     : [support.node.x + 50, support.node.y];
   var textEl = paper.text(pt[0], pt[1], label);
   textEl.attr({
-    'fill': '#fff',
+    'fill': COLORS.supportForce,
     'font-size': 16
   });
   support.textEl = createShadowedSet(textEl);
 }
 
-function nodesToFront() {
-  _.each(members, function(x) {
-    x.el.toFront();
-    if (x.textEl) x.textEl.toFront();
-  });
-  _.each(supports, function(x) {
-    x.el.toFront();
-  });
-  _.each(loads, function(x) {
-    x.el.toFront();
-    if (x.textEl) x.textEl.toFront();
-  });
-  _.each(supports, function(x) {
-    if (x.textEl) x.textEl.toFront();
-  });
-  _.each(nodes, function(node) {
-    node.el.toFront();
-  });
-}
+    function nodesToFront() {
+      console.log("TOFRONT");
+      _.each(members, function(x) {
+        x.el.toFront();
+        if (x.textEl) x.textEl.toFront();
+      });
+      _.each(supports, function(x) {
+        x.el.toFront();
+      });
+      _.each(loads, function(x) {
+        x.el.toFront();
+        if (x.textEl) x.textEl.toFront();
+      });
+      _.each(supports, function(x) {
+        if (x.textEl) x.textEl.toFront();
+      });
+      _.each(nodes, function(node) {
+        node.el.toFront();
+      });
+    }
 
 $(function(){
   paper = Raphael('canvas', w, h);

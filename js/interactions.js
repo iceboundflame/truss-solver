@@ -90,8 +90,8 @@ function nodeDragStart(x, y, event) {
       var path = [['M', node.x, node.y], ['l', 0, 0]];
       ghostMember = paper.path(path);
       ghostMember.attr({
-        stroke: 'green',
-        'stroke-width': 5
+        stroke: COLORS.ghostMember,
+        'stroke-width': SIZES.memberWidth
       });
       ghostMember.dclNode1 = node;
       nodesToFront();
