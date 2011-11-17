@@ -38,7 +38,16 @@ function deleteNode(node) {
   });
 }
 
+    function findMember(node1, node2) {
+      return _.find(node1.members, function(member) {
+        return otherNode(member, node1) == node2;
+      });
+    }
+
 function createMember(node1, node2) {
+  if (findMember(node1, node2))
+    return;
+
   var s = ++serial;
   var member = members[s] = {
     serial: s,

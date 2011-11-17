@@ -180,7 +180,6 @@ function updateSupportLabel(support, label) {
 }
 
     function nodesToFront() {
-      console.log("TOFRONT");
       _.each(members, function(x) {
         x.el.toFront();
         if (x.textEl) x.textEl.toFront();
