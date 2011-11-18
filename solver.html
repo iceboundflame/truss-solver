@@ -27,6 +27,10 @@ Sun 11/12 - 15:00 - 18:00 (2h)
 <script src="lib/raphael.blur.js" type="text/javascript"></script>
 <script src="lib/sylvester.js" type="text/javascript"></script>
 <script src="lib/underscore.js" type="text/javascript"></script>
+<script src="lib/json2.js" type="text/javascript"></script>
+<script src="lib/jquery.ba-hashchange.min.js" type="text/javascript"></script>
+<script src="lib/webtoolkit.base64.js" type="text/javascript"></script>
+<script src="lib/lzw.js" type="text/javascript"></script>
 
 <style>
 html {
@@ -35,6 +39,9 @@ html {
 }
 button.active {
   background: red !important;
+}
+input#blob {
+  width: 100%;
 }
 </style>
 </head>
@@ -63,6 +70,9 @@ button.active {
 <li>Positive member forces are in tension, negative indicates compression.</li>
 </ul>
 
+<button id="recompute-blob-btn">Get Link to this Setup</button>
+<input type="text" id="blob" />
+
 <div id="console1"></div>
 <div id="console2"></div>
 
@@ -76,10 +86,10 @@ function showElems() {
 }
 setInterval(showElems, 100);
 </script>
-<script type="text/javascript" src="js/model.js"></script>
 <script type="text/javascript" src="js/drawing.js"></script>
 <script type="text/javascript" src="js/interactions.js"></script>
 <script type="text/javascript" src="js/compute.js"></script>
+<script type="text/javascript" src="js/model.js"></script>
 
 </body>
 </html>

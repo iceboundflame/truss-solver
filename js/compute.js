@@ -32,6 +32,10 @@ function memberAngle(member, node) {
 }
 
 function recompute() {
+  // a de-facto call for on-model-change
+  invalidatePermalink();
+
+
   var serialToIdx = {}; // unknown to x_idx
   var idxToSerial = {}; // unknown to x_idx
   var idxToType = {};
@@ -175,22 +179,24 @@ function recompute() {
 
   var vecXvalues;
   var vecXlabels;
-  if (nDims == matA.length) {
-    // Matrix computation
-    // Ax = B
-    // x = (A^-1)B
+  if (nDims > 0) {
+    if (nDims == matA.length) {
+      // Matrix computation
+      // Ax = B
+      // x = (A^-1)B
 
-    var matAinv = $M(matA).inv();
-    if (matAinv) {
-      vecXvalues = matAinv.multiply($V(vecB)).elements;
+      var matAinv = $M(matA).inv();
+      if (matAinv) {
+        vecXvalues = matAinv.multiply($V(vecB)).elements;
 
-      vecXlabels = [];
-      for (var i = 0; i < nDims; ++i) {
-        vecXlabels[i] = vecXvalues[i].toFixed(0) + " N";
+        vecXlabels = [];
+        for (var i = 0; i < nDims; ++i) {
+          vecXlabels[i] = vecXvalues[i].toFixed(0) + " N";
+        }
       }
+    } else {
+      $('#console2').append('<p>Number of equations does not match number of unknowns</p>');
     }
-  } else {
-    $('#console2').append('<p>Number of equations does not match number of unknowns</p>');
   }
 
   if (!vecXvalues) {

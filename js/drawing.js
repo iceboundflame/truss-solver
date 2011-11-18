@@ -134,6 +134,7 @@ function createLoadEls(node, val, angle, s) {
 
   el.click(loadClick);
   textEl.click(loadClick);
+  rightClickify(el, loadClick);
 
   return {el: el, textEl: textEl};
 }
