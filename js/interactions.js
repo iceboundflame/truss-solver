@@ -3,6 +3,14 @@ var mode = 'select';
 var NODE_SNAP = gridspace/4;
 var UNIT_ANGLE = 15 / 180 * Math.PI; // 15 degree snap
 
+// N.B. don't think this works with Sets
+function rightClickify(raphaelEl, handler) {
+  $(raphaelEl.node).bind('contextmenu', function(e) {
+    handler.apply(raphaelEl, [e, e.x, e.y]);
+    return false;
+  });
+}
+
 function bgClick(event) {
   var x = event.layerX;
   var y = event.layerY;
@@ -121,7 +129,9 @@ function nodeDragEnd(event) {
 
     case 'add-member-btn':
       var hit = paper.getElementByPoint(event.x, event.y);
-      if (hit && hit.dclType == 'node') {
+      if (hit && hit.dclType == 'node' &&
+          nodes[hit.dclSerial] != ghostMember.dclNode1)
+      {
         createMember(ghostMember.dclNode1, nodes[hit.dclSerial]);
       }
 
@@ -214,6 +224,26 @@ $(function(){
   });
   $('#add-load-btn').button().click(function() {
     setSelection('add-load-btn');
+  });
+
+  $(document).keydown(function(event) {
+    switch (String.fromCharCode(event.keyCode)) {
+      case '1':
+        setSelection('arrow-btn');
+        break;
+      case '2':
+        setSelection('add-node-btn');
+        break;
+      case '3':
+        setSelection('add-member-btn');
+        break;
+      case '4':
+        setSelection('add-support-btn');
+        break;
+      case '5':
+        setSelection('add-load-btn');
+        break;
+    }
   });
 
   function setSelection(name) {

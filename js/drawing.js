@@ -60,9 +60,10 @@ function createNodeEl(x, y, s) {
   el.attr({fill: COLORS.nodeFill, stroke: COLORS.nodeStroke});
   el.dclSerial = s;
   el.dclType = 'node';
+
   el.drag(nodeDragMove, nodeDragStart, nodeDragEnd);
   el.click(nodeClick);
-
+  rightClickify(el, nodeClick);
   return el;
 }
 
@@ -81,6 +82,7 @@ function createMemberEl(node1, node2, s) {
   el.dclType = 'member';
 
   el.click(memberClick);
+  rightClickify(el, memberClick);
   return el;
 }
 
