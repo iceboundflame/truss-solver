@@ -6,7 +6,7 @@ Sat 11/12 - 22:00 - 04:00 (6h)
 - can make matrix, but it's not square
 - next steps: computation, display computed forces
 
-Sun 11/12 - 15:00 - 18:00 (2h)
+Sun 11/12 - 15:00 - 18:00 (3h)
 - calculations work
 - now just polishing left
 - todo: color members based on compression/tension
@@ -14,6 +14,18 @@ Sun 11/12 - 15:00 - 18:00 (2h)
 - todo: better-looking ghost member
 - todo: show member lengths
 - todo(advanced): save/load trusses, share by URL
+
+Thu 11/17 - 15:00 - 19:00 (4h)
+- lots of polishing
+- all TODO's above are done.
+
+TODO:
+  / Put save URL button in toolbar
+
+  - Big bug FF/Mac: Can't draw members
+  - Perf can be slow with live updating - add option to disable
+  - Improve numerical robustness of solver - maybe don't invert matrix?
+
 -->
 
 <html>
@@ -36,52 +48,81 @@ Sun 11/12 - 15:00 - 18:00 (2h)
 html {
   background: #333;
   color: #f0f0f0;
+  font-family: Tahoma, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
 }
 button.active {
   background: red !important;
 }
 input#blob {
-  width: 100%;
+  width: 200px;
+}
+#controls {
+  font-size: 10px;
+}
+
+#console2 table {
+  font-size: 10px;
+  white-space: nowrap;
+}
+#console1, #console2 {
+  background: #222;
+  padding: 10px;
+  margin: 10px;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+#container {
+  margin: auto;
+  width: 960px;
 }
 </style>
 </head>
 
 <body>
-<div id="controls">
-<div id="toolbar" class="ui-widget-header ui-corner-all">
-<button id="arrow-btn">Select [1]</button>
-<button id="add-node-btn">Add Node [2]</button>
-<button id="add-member-btn">Add Member [3]</button>
-<button id="add-support-btn">Add Support [4]</button>
-<button id="add-load-btn">Add Load [5]</button>
-</div>
-<div id="toolbar" class="ui-widget-header ui-corner-all">
-<button id="toggle-compute-btn">Toggle Length/Forces</button>
-<button id="clear-btn">Clear</button>
-</div>
-</div>
+<div id="container">
+  <div id="controls">
+    <div class="ui-widget-header ui-corner-all">
+      <button id="arrow-btn">Select [1]</button>
+      <button id="add-node-btn">Add Node [2]</button>
+      <button id="add-member-btn">Add Member [3]</button>
+      <button id="add-support-btn">Add Fixed Support [4]</button>
+      <button id="add-load-btn">Add Load [5]</button>
+    </div>
+    <div class="ui-widget-header ui-corner-all">
+      <button id="toggle-compute-btn">Toggle Length/Forces</button>
+      <button id="clear-btn">Clear</button>
+      <button id="recompute-blob-btn">Generate Link to Save Truss</button>
+      <span>
+        <label for="blob">Permalink (select and copy):</label>
+        <input type="text" id="blob" />
+      </span>
+    </div>
+  </div>
 
-<div id="canvas"></div>
-<p>Tips</p>
-<ul>
-<li>Snapping is on by default. Hold down SHIFT to disable temporarily.</li>
-<li>Use keyboard keys 1-5 to quickly switch tools.</li>
-<li>Select/Add Node: Right-click a node to delete it, drag to move it.</li>
-<li>Select/Add Member: Right-click a member to delete it.</li>
-<li>Add Support: Click on nodes to toggle the type of support.</li>
-<li>Add Load: Click and drag nodes to create loads. Click a node to remove loads.</li>
-<li>When the system is solvable, computed forces will appear on the screen.</li>
-<li>Positive member forces are in tension, negative indicates compression.</li>
-</ul>
+  <div id="canvas"></div>
 
-<button id="recompute-blob-btn">Get Link to this Setup</button>
-<input type="text" id="blob" />
+  <div id="tips">
+    <p>Tips</p>
+    <ul>
+      <li>Snapping is on by default. Hold down SHIFT to disable temporarily.</li>
+      <li>Use keyboard keys 1-5 to quickly switch tools.</li>
+      <li>Select/Add Node: Right-click a node to delete it, drag to move it.</li>
+      <li>Select/Add Member: Right-click a member to delete it.</li>
+      <li>Add Support: Click on nodes to toggle the type of support.</li>
+      <li>Add Load: Click and drag nodes to create loads. Click a node to remove loads.</li>
+      <li>When the system is solvable, computed forces will appear on the screen.</li>
+      <li>Positive member forces are in tension, negative indicates compression.</li>
+    </ul>
+  </div>
+</div>
 
 <div id="console1"></div>
 <div id="console2"></div>
 
 <script>
-var w = 800;
+var w = 960;
 var h = 600;
 var gridspace = 50;
 
