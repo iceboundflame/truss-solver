@@ -20,7 +20,9 @@ var COLORS = {
   load: '#f00',
 
   loadForce: '#fff',
-  memberForce: '#fff',
+  memberForceZero: '#ccc',
+  memberForceTension: '#fa8',
+  memberForceCompression: '#8af',
   supportForce: '#fff'
 };
 
@@ -136,13 +138,23 @@ function createLoadEls(node, val, angle, s) {
 
     function createShadowedSet(el, offset, blur, fill) {
       if (!offset) offset = 1;
-      if (!blur) blur = 3;
+      if (!blur) blur = 5;
       if (!fill) fill = '#000';
 
-      var topEl = el.clone();
-      el.attr({fill: fill});
-      el.translate(offset, offset);
-      el.blur(blur);
+      /*if (true) {*/
+      if (false) {
+        var topEl = el.clone();
+        el.attr({fill: fill});
+        el.translate(offset, offset);
+        el.blur(blur);
+      } else {
+        var topEl = el;
+        var bbox = el.getBBox(false);
+        el = paper.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+        el.attr({fill: fill, 'fill-opacity': 0.7});
+        el.blur(blur);
+        topEl.toFront();
+      }
 
       var set = paper.set();
       set.push(el, topEl);
@@ -154,13 +166,13 @@ function createLoadEls(node, val, angle, s) {
         (member.node1.y + member.node2.y)/2];
     }
 
-function updateMemberLabel(member, label) {
+function updateMemberLabel(member, label, color) {
   if (member.textEl)
     member.textEl.remove();
   var mid = memberMidpoint(member);
   var textEl = paper.text(mid[0], mid[1], label);
   textEl.attr({
-    'fill': COLORS.memberForce,
+    'fill': color,
     'font-size': 16
   });
   member.textEl = createShadowedSet(textEl);

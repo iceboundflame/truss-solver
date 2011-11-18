@@ -173,7 +173,8 @@ function recompute() {
   $('#console2').html(str);
 
 
-  var vecXsolutions;
+  var vecXvalues;
+  var vecXlabels;
   if (nDims == matA.length) {
     // Matrix computation
     // Ax = B
@@ -181,21 +182,24 @@ function recompute() {
 
     var matAinv = $M(matA).inv();
     if (matAinv) {
-      vecXsolutions = matAinv.multiply($V(vecB)).elements;
+      vecXvalues = matAinv.multiply($V(vecB)).elements;
 
+      vecXlabels = [];
       for (var i = 0; i < nDims; ++i) {
-        vecXsolutions[i] = vecXsolutions[i].toFixed(0) + " N";
+        vecXlabels[i] = vecXvalues[i].toFixed(0) + " N";
       }
     }
   } else {
     $('#console2').append('<p>Number of equations does not match number of unknowns</p>');
   }
 
-  if (!vecXsolutions) {
+  if (!vecXvalues) {
     $('#console2').append('<p>System of equations cannot be solved</p>');
-    vecXsolutions = [];
+    vecXvalues = [];
+    vecXlabels = [];
     for (var i = 0; i < nDims; ++i) {
-      vecXsolutions[i] = '';
+      vecXvalues[i] = 0;
+      vecXlabels[i] = '';
     }
   }
 
@@ -204,11 +208,18 @@ function recompute() {
   for (var i = 0; i < nDims; ++i) {
     var type = idxToType[i];
     var serial = idxToSerial[i];
-    var soln = vecXsolutions[i];
     if (type == 'member') {
-      updateMemberLabel(members[serial], soln);
+      var color = COLORS.memberForceZero;
+      var EPSILON = 1e-5;
+      if (vecXvalues[i] > EPSILON) {
+        color = COLORS.memberForceTension;
+      } else if (vecXvalues[i] < -EPSILON) {
+        color = COLORS.memberForceCompression;
+      }
+
+      updateMemberLabel(members[serial], vecXlabels[i], color);
     } else if (type == 'support') {
-      updateSupportLabel(supports[serial], soln);
+      updateSupportLabel(supports[serial], vecXlabels[i]);
     } else {
       if(confirm("???")) debugger;
     }
