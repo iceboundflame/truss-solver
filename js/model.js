@@ -5,10 +5,16 @@ var loads = {};
 var serial = 1000;
 
 function resetModel() {
-  _.each(nodes, function(node) {
-    deleteNode(node); // will delete attached members, supports, loads
-  });
-  serial = 1000;
+  try {
+    stopComputing();
+
+    _.each(nodes, function(node) {
+      deleteNode(node); // will delete attached members, supports, loads
+    });
+    serial = 1000;
+  } finally {
+    startComputing();
+  }
 }
 
 function loadData(blob) {
@@ -18,28 +24,32 @@ function loadData(blob) {
     lzw_decode(Base64.decode(blob))
   );
 
-  var frozenNodeSerialToLiveNode = {};
-  _.each(data.nodes, function(fnode) { //fnode = frozen node
-    createNode(fnode.x, fnode.y);
-    lnode = nodes[serial];
-    lnode.supportType = fnode.supportType;
-    frozenNodeSerialToLiveNode[fnode.serial] = lnode;
-  });
-  _.each(data.members, function(fmember) {
-    var node1 = frozenNodeSerialToLiveNode[fmember.node1];
-    var node2 = frozenNodeSerialToLiveNode[fmember.node2];
-    createMember(node1, node2);
-  });
-  _.each(data.supports, function(fsupport) {
-    var node = frozenNodeSerialToLiveNode[fsupport.node];
-    createSupport(node, fsupport.vertical);
-  });
-  _.each(data.loads, function(fload) {
-    var node = frozenNodeSerialToLiveNode[fload.node];
-    createLoad(node, fload.val, fload.angle);
-  });
+  try {
+    stopComputing();
 
-  recompute();
+    var frozenNodeSerialToLiveNode = {};
+    _.each(data.nodes, function(fnode) { //fnode = frozen node
+      createNode(fnode.x, fnode.y);
+      lnode = nodes[serial];
+      lnode.supportType = fnode.supportType;
+      frozenNodeSerialToLiveNode[fnode.serial] = lnode;
+    });
+    _.each(data.members, function(fmember) {
+      var node1 = frozenNodeSerialToLiveNode[fmember.node1];
+      var node2 = frozenNodeSerialToLiveNode[fmember.node2];
+      createMember(node1, node2);
+    });
+    _.each(data.supports, function(fsupport) {
+      var node = frozenNodeSerialToLiveNode[fsupport.node];
+      createSupport(node, fsupport.vertical);
+    });
+    _.each(data.loads, function(fload) {
+      var node = frozenNodeSerialToLiveNode[fload.node];
+      createLoad(node, fload.val, fload.angle);
+    });
+  } finally {
+    startComputing();
+  }
 }
 
 function saveData() {

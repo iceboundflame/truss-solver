@@ -1,37 +1,50 @@
+var noCompute = false;
 
-function zeros(n, m) {
-  var r = [];
-  if (m) {
-    for (var i = 0; i < n; ++i)
-      r[i] = zeros(m);
-  } else {
-    for (var i = 0; i < n; ++i)
-      r[i] = 0;
-  }
-  return r;
+function stopComputing() {
+  noCompute = true;
 }
 
-function otherNode(member, node) {
-  if (member.node1 == node)
-    return member.node2;
-  else if (member.node2 == node)
-    return member.node1;
-  else {
-    if (confirm("Error -- node not in member?"))
-      debugger;
-  }
+function startComputing() {
+  noCompute = false;
+  recompute();
 }
 
-// compute angle emanating from node, as radians CW from EAST
-// output in range [-pi, pi]
-function memberAngle(member, node) {
-  var other = otherNode(member, node);
-  var dx = other.x - node.x;
-  var dy = other.y - node.y;
-  return Math.atan2(dy, dx);
-}
+    function zeros(n, m) {
+      var r = [];
+      if (m) {
+        for (var i = 0; i < n; ++i)
+          r[i] = zeros(m);
+      } else {
+        for (var i = 0; i < n; ++i)
+          r[i] = 0;
+      }
+      return r;
+    }
+
+    function otherNode(member, node) {
+      if (member.node1 == node)
+        return member.node2;
+      else if (member.node2 == node)
+        return member.node1;
+      else {
+        if (confirm("Error -- node not in member?"))
+          debugger;
+      }
+    }
+
+    // compute angle emanating from node, as radians CW from EAST
+    // output in range [-pi, pi]
+    function memberAngle(member, node) {
+      var other = otherNode(member, node);
+      var dx = other.x - node.x;
+      var dy = other.y - node.y;
+      return Math.atan2(dy, dx);
+    }
 
 function recompute() {
+  if (noCompute)
+    return;
+
   // a de-facto call for on-model-change
   invalidatePermalink();
 

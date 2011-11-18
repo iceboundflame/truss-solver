@@ -139,25 +139,21 @@ function createLoadEls(node, val, angle, s) {
   return {el: el, textEl: textEl};
 }
 
-    function createShadowedSet(el, offset, blur, fill) {
-      if (!offset) offset = 1;
+    function createShadowedSet(el, blur, fill) {
       if (!blur) blur = 5;
       if (!fill) fill = '#000';
 
-      /*if (true) {*/
-      if (false) {
-        var topEl = el.clone();
-        el.attr({fill: fill});
-        el.translate(offset, offset);
-        el.blur(blur);
-      } else {
-        var topEl = el;
-        var bbox = el.getBBox(false);
-        el = paper.rect(bbox.x, bbox.y, bbox.width, bbox.height);
-        el.attr({fill: fill, 'fill-opacity': 0.7});
-        el.blur(blur);
-        topEl.toFront();
-      }
+        /*var topEl = el.clone();*/
+        /*el.attr({fill: fill});*/
+        /*el.translate(offset, offset);*/
+        /*el.blur(blur);*/
+
+      var topEl = el;
+      var bbox = el.getBBox(false);
+      el = paper.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+      el.attr({fill: fill, 'fill-opacity': 0.5});
+      /*el.blur(blur);*/
+      topEl.toFront();
 
       var set = paper.set();
       set.push(el, topEl);
