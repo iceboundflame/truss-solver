@@ -225,6 +225,14 @@ $(function(){
   $('#add-load-btn').button().click(function() {
     setSelection('add-load-btn');
   });
+  $('#toggle-compute-btn').button().click(function() {
+    if (computeMode == 'lengths') {
+      computeMode = 'forces';
+    } else {
+      computeMode = 'lengths';
+    }
+    recompute();
+  });
 
   $(document).keydown(function(event) {
     switch (String.fromCharCode(event.keyCode)) {

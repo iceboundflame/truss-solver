@@ -1,4 +1,5 @@
 var noCompute = false;
+var computeMode = 'forces';
 
 function stopComputing() {
   noCompute = true;
@@ -45,10 +46,19 @@ function recompute() {
   if (noCompute)
     return;
 
-  // a de-facto call for on-model-change
+  //////
+  // a de-facto place to put on-model-change hooks
   invalidatePermalink();
+  //////
 
+  if (computeMode == 'forces') {
+    computeForces();
+  } else if (computeMode == 'lengths') {
+    computeLengths();
+  }
+}
 
+function computeForces() {
   var serialToIdx = {}; // unknown to x_idx
   var idxToSerial = {}; // unknown to x_idx
   var idxToType = {};
@@ -245,4 +255,17 @@ function recompute() {
   }
 }
 
+function computeLengths() {
+  _.each(members, function(member) {
+    var dx = member.node1.x - member.node2.x;
+    var dy = member.node1.y - member.node2.y;
+    var dist = Math.sqrt(dx*dx + dy*dy) / (gridspace/2);
+    var label = dist.toFixed(2) + " cm";
+    var color = COLORS.memberLength;
+    updateMemberLabel(member, label, color);
+  });
+  _.each(supports, function(support) {
+    updateSupportLabel(support, '');
+  });
+}
 

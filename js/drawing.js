@@ -6,7 +6,10 @@ var SIZES = {
   memberWidth: 5,
   support: 75,
   supportWidth: 3,
-  loadWidth: 3
+  loadWidth: 3,
+  loadLabel: 12,
+  memberLabel: 12,
+  supportLabel: 12,
 };
 var COLORS = {
   bg: '#555',
@@ -23,6 +26,7 @@ var COLORS = {
   memberForceZero: '#ccc',
   memberForceTension: '#fa8',
   memberForceCompression: '#8af',
+  memberLength: '#ff8',
   supportForce: '#fff'
 };
 
@@ -106,7 +110,7 @@ function createSupportEl(node, vertical, s) {
       angle = Math.abs(angle * 180 / Math.PI);
       if (angle > 90)
         angle = 180 - angle;
-      return Math.round(angle)+" deg";
+      return Math.round(angle)+"\u00B0";
     }
 
 function createLoadEls(node, val, angle, s) {
@@ -125,7 +129,7 @@ function createLoadEls(node, val, angle, s) {
   var textEl = paper.text(node.x+dx, node.y+dy, val + " N, " + humanAngle(angle));
   textEl.attr({
     'fill': COLORS.loadForce,
-    'font-size': 16
+    'font-size': SIZES.loadLabel
   });
   textEl = createShadowedSet(textEl);
 
@@ -172,7 +176,7 @@ function updateMemberLabel(member, label, color) {
   var textEl = paper.text(mid[0], mid[1], label);
   textEl.attr({
     'fill': color,
-    'font-size': 16
+    'font-size': SIZES.memberLabel
   });
   member.textEl = createShadowedSet(textEl);
 }
@@ -185,7 +189,7 @@ function updateSupportLabel(support, label) {
   var textEl = paper.text(pt[0], pt[1], label);
   textEl.attr({
     'fill': COLORS.supportForce,
-    'font-size': 16
+    'font-size': SIZES.supportLabel
   });
   support.textEl = createShadowedSet(textEl);
 }
