@@ -126,7 +126,7 @@ function createLoadEls(node, val, angle, s) {
     'stroke': COLORS.load,
     'arrow-end': 'classic-wide-long'
   });
-  var textEl = paper.text(node.x+dx, node.y+dy, val + " N, " + humanAngle(angle));
+  var textEl = paper.text(node.x+dx/2, node.y+dy/2, val + " N, " + humanAngle(angle));
   textEl.attr({
     'fill': COLORS.loadForce,
     'font-size': SIZES.loadLabel
@@ -184,8 +184,8 @@ function updateSupportLabel(support, label) {
   if (support.textEl)
     support.textEl.remove();
   var pt = support.vertical
-    ? [support.node.x, support.node.y - 50]
-    : [support.node.x + 50, support.node.y];
+    ? [support.node.x, support.node.y - SIZES.support/2]
+    : [support.node.x + SIZES.support/2, support.node.y];
   var textEl = paper.text(pt[0], pt[1], label);
   textEl.attr({
     'fill': COLORS.supportForce,
