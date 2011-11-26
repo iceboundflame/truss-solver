@@ -64,7 +64,7 @@ button.active {
   background: red !important;
 }
 input#blob {
-  width: 200px;
+  width: 300px;
 }
 #controls {
   font-size: 10px;
@@ -85,11 +85,57 @@ input#blob {
   margin: auto;
   width: 960px;
 }
+
+.clearfix {
+  overflow: hidden;
+}
+#tips, #examples { float: left; }
+#tips {
+  width: 600px;
+}
+#examples {
+  width: 360px;
+}
 </style>
 </head>
 
 <body>
 <div id="container">
+  <h1>David Liu's Truss Solver</h1>
+
+  <div class="clearfix">
+    <div id="tips">
+      <h2>Instructions</h2>
+      <ul>
+        <li>Controls
+          <ul>
+            <li>Use keyboard keys 1-5 to quickly switch tools.</li>
+            <li>Add Node: Click the screen to add nodes. Right-click a node to delete it, drag to move it.</li>
+            <li>Add Member: Drag between nodes to add members. Right-click a member to delete it.</li>
+            <li>Add Support: Click on nodes to toggle the type of support. (pin, horizontal roller, vertical roller)</li>
+            <li>Add Load: Click and drag nodes to create loads. Click a node to remove loads.</li>
+            <li>When the system is solvable, computed forces will appear on the screen.</li>
+          </ul></li>
+        <li>Compatibility: Tested in Firefox 3.6, Safari 5.1, Chrome 15. Very slow in Internet Explorer 8.</li>
+        <li>Tips
+          <ul>
+            <li>Snapping is on by default. Hold down SHIFT to disable temporarily.</li>
+            <li>Positive member forces are in tension, negative indicates compression.</li>
+            <li>If the live computations get slow, try clicking "Toggle Length/Forces" temporarily.</li>
+          </ul></li>
+      </ul>
+    </div>
+
+    <div id="examples">
+      <h2>Examples (click to load)</h2>
+      <ul id="examples">
+        <li><a href="http://iceboundflame.com/projects/truss-solver/#eyJub2RlcyI6W8SAc2VyaWFsxIcxMDAxLCJ4xJEyNcSWecSHMzfEmyJzdXBwb3J0VHlwZcSHLTF9LMSKxIzEjsSQOsSSMDLElsSYOjLEoMScxIcyxJPElsSjxKXEp8SpxKvErTowxLHEs8SNxI/EkcSTM8S7xIc0xL8ixJ3Et8SaxYTEpMSmxKjEqsSsxIfFjMSyxKLEtMWQxLfEkzTFlDo2xZfFmcWCMMWcxYbFn8WJxaLFjcWlxY/EtsS4xKHEvDjFm8WYxJ7Fl8WFxZ7FiMWhOi0yxbfEi8W5xZEwNsWrNsWDxoA6xJ/EocaDxYfFoMWKxaPFjsS1xo03xaszNcWxxpPGlcWyxoTGmcW2XcSWbWVtYsSMxIbEiMSAxILEhDHGjcaPxIHEg2Uyxo00xbfGtGXGtsWoMMWqxrnEhMa8x4Mzxr/GuseCxLjFk8eGxrvGjcaJxaTHgMeNxJPEuseQx4jEuMSwx5THjMaNxJXHmcaex4vGtcaexJbHgMeaxJM2x6PHgca3x6bGuseoMDXHq8eWx7HHrseHxr3Hs8aNx4/Hp8eix53HpMeDxp/HoceDx5PGs8eex4nHtseRx4PHqsaqxKLFncWHxrHEiceQx5/ElnbEjHRpY8WnZsSPxIvHq8iTIsiVxKjImMWndHJ1Zciex4PEocihyJfImcS2yKXIp33IjGxvYWTIkMiFxITHrcigxacyx5hhbmdsxYoxLjU3MDc5NjMyxa05NDjJi8eqx77JhMSTyIF2yL3Iv8mByYPEkcmGyYjJismMyY7JismRyZPIsn0=">A Warren Truss Bridge</a></li>
+        <li><a href="http://iceboundflame.com/projects/truss-solver/#eyJub2RlcyI6W8SAc2VyaWFsxIcxMDAxLCJ4xJE3NcSWecSHM8SaxJZzdXBwb3J0VHlwZcSHLTF9LMSKxIzEjsSQOsSSMDLElsSYOjLEoCLEncS8MsSbIsSixKTEpsSoxKrErDowxLDEssSNxI/EkcSTM8S6xIc0xYLEnMSHMsWXxYTEo8SlxKfEqcSrxIfFjMSxxYTEs8WQxLbEkzTFlDrFlsWDxYDEn8WDxYXFnsWIxaHFi8WNxaXFj8S1xLfFg8S7xL3FrsSexL7FssWHxaDFisWjxY7EtMWRMDbFqzXFm8WAxZrFscWdxoPFicStxK9dxJZtZW1ixIzEhsSIxIDEgsSEMcaJxovEgcSDZTLGiTPFt8ahZcajxagwxZPGpsSExqnGsDTGrManxq/Et8WqxrPGqMakxrjGosaqxJbGrca1xLcyx4DGrsaJxLnGvceFxJM1x4jGuseOx4PGp8eNMMa3xaTGrceRxJTHk8a0xonHj8eYxrnGicSVx4zHin3Gl8WcxYbEp8aexInGvcakxJZ2xIx0aWPFp2bEj8SLx4jHriLHsMSnx7PFp3RydWXHucawx6PHvMeyx7TEtce2bMe4x6DEhMeix6/Hsce+xLXIgMiCx6bElmxvYWTHq8agxqfGica8dsWnxZthbmdsxYotMi4zNTYxOTQ0OcSUOTIzNMefyJ7Ij8awxrLIosW6xYPIpcinyKnIqzDIsTM5NcSSyLc5M8iwNcarXX0=">Truss Structure</a></li>
+      </ul>
+    </div>
+  </div>
+
+
   <div id="controls">
     <div class="ui-widget-header ui-corner-all">
       <button id="arrow-btn">Select [1]</button>
@@ -101,35 +147,15 @@ input#blob {
     <div class="ui-widget-header ui-corner-all">
       <button id="toggle-compute-btn">Toggle Length/Forces</button>
       <button id="clear-btn">Clear</button>
-      <button id="recompute-blob-btn">Generate Link to Save Truss</button>
+      <button id="recompute-blob-btn">Generate Permalink to Save Truss</button>
       <span>
-        <label for="blob">Permalink (select and copy):</label>
+        <label for="blob">Permalink (click and copy):</label>
         <input type="text" id="blob" />
       </span>
     </div>
   </div>
-
   <div id="canvas"></div>
 
-  <div id="tips">
-    <h3>Tips</h3>
-    <ul>
-      <li>Snapping is on by default. Hold down SHIFT to disable temporarily.</li>
-      <li>Use keyboard keys 1-5 to quickly switch tools.</li>
-      <li>Select/Add Node: Right-click a node to delete it, drag to move it.</li>
-      <li>Select/Add Member: Right-click a member to delete it.</li>
-      <li>Add Support: Click on nodes to toggle the type of support.</li>
-      <li>Add Load: Click and drag nodes to create loads. Click a node to remove loads.</li>
-      <li>When the system is solvable, computed forces will appear on the screen.</li>
-      <li>Positive member forces are in tension, negative indicates compression.</li>
-    </ul>
-  </div>
-
-  <h3>Examples</h3>
-  <ul id="examples">
-  <li><a href="http://iceboundflame.com/projects/truss-solver/#eyJub2RlcyI6W8SAc2VyaWFsxIcxMDAxLCJ4xJEyNcSWecSHMzfEmyJzdXBwb3J0VHlwZcSHLTF9LMSKxIzEjsSQOsSSMDLElsSYOjLEoMScxIcyxJPElsSjxKXEp8SpxKvErTowxLHEs8SNxI/EkcSTM8S7xIc0xL8ixJ3Et8SaxYTEpMSmxKjEqsSsxIfFjMSyxKLEtMWQxLfEkzTFlDo2xZfFmcWCMMWcxYbFn8WJxaLFjcWlxY/EtsS4xKHEvDjFm8WYxJ7Fl8WFxZ7FiMWhOi0yxbfEi8W5xZEwNsWrNsWDxoA6xJ/EocaDxYfFoMWKxaPFjsS1xo03xaszNcWxxpPGlcWyxoTGmcW2XcSWbWVtYsSMxIbEiMSAxILEhDHGjcaPxIHEg2Uyxo00xbfGtGXGtsWoMMWqxrnEhMa8x4Mzxr/GuseCxLjFk8eGxrvGjcaJxaTHgMeNxJPEuseQx4jEuMSwx5THjMaNxJXHmcaex4vGtcaexJbHgMeaxJM2x6PHgca3x6bGuseoMDXHq8eWx7HHrseHxr3Hs8aNx4/Hp8eix53HpMeDxp/HoceDx5PGs8eex4nHtseRx4PHqsaqxKLFncWHxrHEiceQx5/ElnbEjHRpY8WnZsSPxIvHq8iTIsiVxKjImMWndHJ1Zciex4PEocihyJfImcS2yKXIp33IjGxvYWTIkMiFxITHrcigxacyx5hhbmdsxYoxLjU3MDc5NjMyxa05NDjJi8eqx77JhMSTyIF2yL3Iv8mByYPEkcmGyYjJismMyY7JismRyZPIsn0=">A Warren Truss Bridge</a></li>
-  <li><a href="http://iceboundflame.com/projects/truss-solver/#eyJub2RlcyI6W8SAc2VyaWFsxIcxMDAxLCJ4xJE3NcSWecSHM8SaxJZzdXBwb3J0VHlwZcSHLTF9LMSKxIzEjsSQOsSSMDLElsSYOjLEoCLEncS8MsSbIsSixKTEpsSoxKrErDowxLDEssSNxI/EkcSTM8S6xIc0xYLEnMSHMsWXxYTEo8SlxKfEqcSrxIfFjMSxxYTEs8WQxLbEkzTFlDrFlsWDxYDEn8WDxYXFnsWIxaHFi8WNxaXFj8S1xLfFg8S7xL3FrsSexL7FssWHxaDFisWjxY7EtMWRMDbFqzXFm8WAxZrFscWdxoPFicStxK9dxJZtZW1ixIzEhsSIxIDEgsSEMcaJxovEgcSDZTLGiTPFt8ahZcajxagwxZPGpsSExqnGsDTGrManxq/Et8WqxrPGqMakxrjGosaqxJbGrca1xLcyx4DGrsaJxLnGvceFxJM1x4jGuseOx4PGp8eNMMa3xaTGrceRxJTHk8a0xonHj8eYxrnGicSVx4zHin3Gl8WcxYbEp8aexInGvcakxJZ2xIx0aWPFp2bEj8SLx4jHriLHsMSnx7PFp3RydWXHucawx6PHvMeyx7TEtce2bMe4x6DEhMeix6/Hsce+xLXIgMiCx6bElmxvYWTHq8agxqfGica8dsWnxZthbmdsxYotMi4zNTYxOTQ0OcSUOTIzNMefyJ7Ij8awxrLIosW6xYPIpcinyKnIqzDIsTM5NcSSyLc5M8iwNcarXX0=">Truss Structure</a></li>
-  </ul>
 </div>
 
 <div id="console1"></div>

@@ -11,11 +11,12 @@ function rightClickify(raphaelEl, handler) {
   });
 }
 
+// JS mouse handling is insane
+// See http://unixpapa.com/js/mouse.html
 function canvasCoords(pageX, pageY) {
   var off = $('#canvas').offset();
   return [pageX - off.left, pageY - off.top];
 }
-
 function fixEventCoords(event) {
   // Calculate pageX/Y if missing and clientX/Y available
   if ( event.pageX == null && event.clientX != null ) {
@@ -30,6 +31,14 @@ function fixEventCoords(event) {
   event.dclCanvasX = xy[0];
   event.dclCanvasY = xy[1];
 }
+function isLeftClick(event) {
+  if (event.which == null) /* IE case */
+    return (event.button < 2);
+  else /* All others */
+    return (event.which < 2);
+}
+
+// Event handlers
 
 function bgClick(event) {
   fixEventCoords(event);
@@ -44,13 +53,6 @@ function bgClick(event) {
   if (mode == 'add-node-btn') {
     createNode(x, y);
   }
-}
-
-function isLeftClick(event) {
-  if (event.which == null) /* IE case */
-    return (event.button < 2);
-  else /* All others */
-    return (event.which < 2);
 }
 
 function nodeClick(event) {
@@ -146,6 +148,7 @@ function nodeDragStart(x, y, event) {
       break;
   }
 }
+
 function nodeDragEnd(event) {
   fixEventCoords(event);
   var node = nodes[this.dclSerial];
@@ -176,6 +179,7 @@ function nodeDragEnd(event) {
   }
   recompute();
 }
+
 function nodeDragMove(dx, dy, x, y, event) {
   var node = nodes[this.dclSerial];
   switch(mode) {
