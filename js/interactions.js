@@ -159,7 +159,7 @@ function nodeDragEnd(event) {
       break;
 
     case 'add-member-btn':
-      var hit = paper.getElementByPoint(event.pageX, event.pageY);
+      var hit = paper.getElementByPoint(event.clientX, event.clientY);
       if (hit && hit.dclType == 'node' &&
           nodes[hit.dclSerial] != node)
       {
