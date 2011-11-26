@@ -11,9 +11,30 @@ function rightClickify(raphaelEl, handler) {
   });
 }
 
+function canvasCoords(pageX, pageY) {
+  var off = $('#canvas').offset();
+  return [pageX - off.left, pageY - off.top];
+}
+
+function fixEventCoords(event) {
+  // Calculate pageX/Y if missing and clientX/Y available
+  if ( event.pageX == null && event.clientX != null ) {
+    var doc = document.documentElement, body = document.body;
+    event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0)
+                    - (doc && doc.clientLeft || body && body.clientLeft || 0);
+    event.pageY = event.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0)
+                    - (doc && doc.clientTop  || body && body.clientTop  || 0);
+  }
+
+  var xy = canvasCoords(event.pageX, event.pageY);
+  event.dclCanvasX = xy[0];
+  event.dclCanvasY = xy[1];
+}
+
 function bgClick(event) {
-  var x = event.layerX;
-  var y = event.layerY;
+  fixEventCoords(event);
+  var x = event.dclCanvasX;
+  var y = event.dclCanvasY;
 
   if (!event.shiftKey) {
     x = Math.round(x / NODE_SNAP) * NODE_SNAP;
@@ -25,12 +46,20 @@ function bgClick(event) {
   }
 }
 
+function isLeftClick(event) {
+  if (event.which == null) /* IE case */
+    return (event.button < 2);
+  else /* All others */
+    return (event.which < 2);
+}
+
 function nodeClick(event) {
   var node = nodes[this.dclSerial];
   switch(mode) {
     case 'arrow-btn':
     case 'add-node-btn':
-      if (event.which != 1) {
+      /*if (event.which != 1) {*/
+      if (!isLeftClick(event) || event.ctrlKey) {
         deleteNode(node);
       }
       break;
@@ -118,6 +147,7 @@ function nodeDragStart(x, y, event) {
   }
 }
 function nodeDragEnd(event) {
+  fixEventCoords(event);
   var node = nodes[this.dclSerial];
   switch(mode) {
     case 'arrow-btn':
@@ -126,7 +156,7 @@ function nodeDragEnd(event) {
       break;
 
     case 'add-member-btn':
-      var hit = paper.getElementByPoint(event.clientX, event.clientY);
+      var hit = paper.getElementByPoint(event.pageX, event.pageY);
       if (hit && hit.dclType == 'node' &&
           nodes[hit.dclSerial] != node)
       {
