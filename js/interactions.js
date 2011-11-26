@@ -58,7 +58,6 @@ function bgClick(event) {
 function nodeClick(event) {
   var node = nodes[this.dclSerial];
   switch(mode) {
-    case 'arrow-btn':
     case 'add-node-btn':
       /*if (event.which != 1) {*/
       if (!isLeftClick(event) || event.ctrlKey) {
@@ -86,7 +85,6 @@ function nodeClick(event) {
 
 function memberClick(event) {
   switch(mode) {
-    case 'arrow-btn':
     case 'add-member-btn':
       if (event.which != 1) {
         deleteMember(members[this.dclSerial]);
@@ -98,7 +96,6 @@ function memberClick(event) {
 
 function loadClick(event) {
   switch (mode) {
-    case 'arrow-btn':
     case 'add-load-btn':
       if (event.which != 1) {
         deleteLoad(loads[this.dclSerial]);
@@ -114,7 +111,6 @@ var ghostLoad = null;
 function nodeDragStart(x, y, event) {
   var node = nodes[this.dclSerial];
   switch(mode) {
-    case 'arrow-btn':
     case 'add-node-btn':
       this.attr({'fill-opacity': 0.5});
 
@@ -153,7 +149,6 @@ function nodeDragEnd(event) {
   fixEventCoords(event);
   var node = nodes[this.dclSerial];
   switch(mode) {
-    case 'arrow-btn':
     case 'add-node-btn':
       this.attr({'fill-opacity': 1});
       break;
@@ -183,7 +178,6 @@ function nodeDragEnd(event) {
 function nodeDragMove(dx, dy, x, y, event) {
   var node = nodes[this.dclSerial];
   switch(mode) {
-    case 'arrow-btn':
     case 'add-node-btn':
       var cx = this.dclOX+dx;
       var cy = this.dclOY+dy;
@@ -241,9 +235,6 @@ function nodeDragMove(dx, dy, x, y, event) {
 
 
 $(function(){
-  $('#arrow-btn').button().click(function() {
-    setSelection('arrow-btn');
-  });
   $('#add-node-btn').button().click(function() {
     setSelection('add-node-btn');
   });
@@ -268,18 +259,15 @@ $(function(){
   $(document).keydown(function(event) {
     switch (String.fromCharCode(event.keyCode)) {
       case '1':
-        setSelection('arrow-btn');
-        break;
-      case '2':
         setSelection('add-node-btn');
         break;
-      case '3':
+      case '2':
         setSelection('add-member-btn');
         break;
-      case '4':
+      case '3':
         setSelection('add-support-btn');
         break;
-      case '5':
+      case '4':
         setSelection('add-load-btn');
         break;
     }
