@@ -25,7 +25,7 @@ function bgClick(event) {
   }
 }
 
-function nodeClick(event, x, y) {
+function nodeClick(event) {
   var node = nodes[this.dclSerial];
   switch(mode) {
     case 'arrow-btn':
@@ -53,7 +53,7 @@ function nodeClick(event, x, y) {
   recompute();
 }
 
-function memberClick(event, x, y) {
+function memberClick(event) {
   switch(mode) {
     case 'arrow-btn':
     case 'add-member-btn':
@@ -65,7 +65,7 @@ function memberClick(event, x, y) {
   recompute();
 }
 
-function loadClick(event, x, y) {
+function loadClick(event) {
   switch (mode) {
     case 'arrow-btn':
     case 'add-load-btn':
@@ -101,7 +101,6 @@ function nodeDragStart(x, y, event) {
         stroke: COLORS.ghostMember,
         'stroke-width': SIZES.memberWidth
       });
-      ghostMember.dclNode1 = node;
       nodesToFront();
 
       break;
@@ -113,7 +112,6 @@ function nodeDragStart(x, y, event) {
 
       var path = [['M', node.x, node.y], ['l', 0, 0]];
       ghostLoad = createLoadEls(node, 0, 0);
-      ghostLoad.dclNode = node;
       ghostLoad.dclValue = 0;
       ghostLoad.dclAngle = 0;
       break;
@@ -128,11 +126,11 @@ function nodeDragEnd(event) {
       break;
 
     case 'add-member-btn':
-      var hit = paper.getElementByPoint(event.x, event.y);
+      var hit = paper.getElementByPoint(event.clientX, event.clientY);
       if (hit && hit.dclType == 'node' &&
-          nodes[hit.dclSerial] != ghostMember.dclNode1)
+          nodes[hit.dclSerial] != node)
       {
-        createMember(ghostMember.dclNode1, nodes[hit.dclSerial]);
+        createMember(node, nodes[hit.dclSerial]);
       }
 
       ghostMember.remove();
@@ -140,7 +138,7 @@ function nodeDragEnd(event) {
 
     case 'add-load-btn':
       if (ghostLoad.dclValue > 0) {
-        createLoad(ghostLoad.dclNode, ghostLoad.dclValue, ghostLoad.dclAngle);
+        createLoad(node, ghostLoad.dclValue, ghostLoad.dclAngle);
       }
       ghostLoad.el.remove();
       ghostLoad.textEl.remove();
@@ -198,7 +196,6 @@ function nodeDragMove(dx, dy, x, y, event) {
       ghostLoad.el.remove();
       ghostLoad.textEl.remove();
       ghostLoad = createLoadEls(node, val, angle);
-      ghostLoad.dclNode = node;
       ghostLoad.dclValue = val;
       ghostLoad.dclAngle = angle;
 
