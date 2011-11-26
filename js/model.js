@@ -216,23 +216,21 @@ function createPermalink() {
   $('#blob').val(window.location.href.split('#')[0]+'#'+saveData());
 }
 function invalidatePermalink() {
-  window.location.hash = '';
   $('#blob').val('');
 }
 
 $(function() {
   $(window).hashchange(function() {
-    if (window.location.hash) {
+    if (window.location.hash.length > 1) {
       if (_.size(nodes) == 0 || confirm("We're about to load a truss and replace your current work.")) {
         loadData(window.location.hash.substring(1));
-      } else {
-        window.location.hash = '';
       }
+      window.location.hash = '';
     }
   }).hashchange();
 
   $('#clear-btn').button().click(function() {
-    if (_.size(nodes) == 0 || confirm("Clearing the screen will erase everything you've done so far.")) {
+    if (_.size(nodes) == 0 || confirm("We're about to clear the screen and erase your current work.")) {
       resetModel();
     }
   });
