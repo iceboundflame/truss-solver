@@ -186,10 +186,16 @@ function computeForces() {
     for (var c = 0; c < matA[r].length; ++c) {
       if (c != 0)
         str += "<td>+</td>";
-      str += "<td>(</td>";
 
-      str += "<td>"+matA[r][c].toFixed(4)+"</td>";
-      str += "<td>)x<sub>"+(c+1)+"</sub></td>";
+      if (matA[r][c] < 1e-5) {
+        str += "<td></td>";
+        str += "<td></td>";
+        str += "<td></td>";
+      } else {
+        str += "<td>(</td>";
+        str += "<td>"+matA[r][c].toFixed(4)+"</td>";
+        str += "<td>)x<sub>"+(c+1)+"</sub></td>";
+      }
     }
     str += "<td>=</td>";
     str += "<td>"+vecB[r].toFixed(2)+"</td>";

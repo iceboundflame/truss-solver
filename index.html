@@ -1,35 +1,5 @@
 <!DOCTYPE html>
 
-<!--
-Time log
-Sat 11/12 - 22:00 - 04:00 (6h)
-- 622 LOC : ~103 lines/hr
-- construction interface ready
-- can make matrix, but it's not square
-- next steps: computation, display computed forces
-
-Sun 11/12 - 15:00 - 18:00 (3h)
-- calculations work
-- now just polishing left
-/ todo: color members based on compression/tension
-/ todo: delete with right-click is blocked by ctx menu
-/ todo: better-looking ghost member
-/ todo: show member lengths
-/ todo(advanced): save/load trusses, share by URL
-
-Thu 11/17 - 15:00 - 19:00 (4h)
-- lots of polishing
-- all TODO's above are done.
-
-TODO:
-  / Put save URL button in toolbar
-
-  / Big bug FF/Mac: Can't draw members
-  - Perf can be slow with live updating - add option to disable
-  - Improve numerical robustness of solver - maybe don't invert matrix?
-
--->
-
 <html>
 <head>
 <title>DCL Truss Solver</title>
@@ -130,8 +100,8 @@ input#blob {
     <div id="examples">
       <h2>Examples (click to load)</h2>
       <ul id="examples">
-        <li><a href="http://iceboundflame.com/projects/truss-solver/#eyJub2RlcyI6W8SAc2VyaWFsxIcxMDAxLCJ4xJEyNcSWecSHMzfEmyJzdXBwb3J0VHlwZcSHLTF9LMSKxIzEjsSQOsSSMDLElsSYOjLEoMScxIcyxJPElsSjxKXEp8SpxKvErTowxLHEs8SNxI/EkcSTM8S7xIc0xL8ixJ3Et8SaxYTEpMSmxKjEqsSsxIfFjMSyxKLEtMWQxLfEkzTFlDo2xZfFmcWCMMWcxYbFn8WJxaLFjcWlxY/EtsS4xKHEvDjFm8WYxJ7Fl8WFxZ7FiMWhOi0yxbfEi8W5xZEwNsWrNsWDxoA6xJ/EocaDxYfFoMWKxaPFjsS1xo03xaszNcWxxpPGlcWyxoTGmcW2XcSWbWVtYsSMxIbEiMSAxILEhDHGjcaPxIHEg2Uyxo00xbfGtGXGtsWoMMWqxrnEhMa8x4Mzxr/GuseCxLjFk8eGxrvGjcaJxaTHgMeNxJPEuseQx4jEuMSwx5THjMaNxJXHmcaex4vGtcaexJbHgMeaxJM2x6PHgca3x6bGuseoMDXHq8eWx7HHrseHxr3Hs8aNx4/Hp8eix53HpMeDxp/HoceDx5PGs8eex4nHtseRx4PHqsaqxKLFncWHxrHEiceQx5/ElnbEjHRpY8WnZsSPxIvHq8iTIsiVxKjImMWndHJ1Zciex4PEocihyJfImcS2yKXIp33IjGxvYWTIkMiFxITHrcigxacyx5hhbmdsxYoxLjU3MDc5NjMyxa05NDjJi8eqx77JhMSTyIF2yL3Iv8mByYPEkcmGyYjJismMyY7JismRyZPIsn0=">A Warren Truss Bridge</a></li>
-        <li><a href="http://iceboundflame.com/projects/truss-solver/#eyJub2RlcyI6W8SAc2VyaWFsxIcxMDAxLCJ4xJE3NcSWecSHM8SaxJZzdXBwb3J0VHlwZcSHLTF9LMSKxIzEjsSQOsSSMDLElsSYOjLEoCLEncS8MsSbIsSixKTEpsSoxKrErDowxLDEssSNxI/EkcSTM8S6xIc0xYLEnMSHMsWXxYTEo8SlxKfEqcSrxIfFjMSxxYTEs8WQxLbEkzTFlDrFlsWDxYDEn8WDxYXFnsWIxaHFi8WNxaXFj8S1xLfFg8S7xL3FrsSexL7FssWHxaDFisWjxY7EtMWRMDbFqzXFm8WAxZrFscWdxoPFicStxK9dxJZtZW1ixIzEhsSIxIDEgsSEMcaJxovEgcSDZTLGiTPFt8ahZcajxagwxZPGpsSExqnGsDTGrManxq/Et8WqxrPGqMakxrjGosaqxJbGrca1xLcyx4DGrsaJxLnGvceFxJM1x4jGuseOx4PGp8eNMMa3xaTGrceRxJTHk8a0xonHj8eYxrnGicSVx4zHin3Gl8WcxYbEp8aexInGvcakxJZ2xIx0aWPFp2bEj8SLx4jHriLHsMSnx7PFp3RydWXHucawx6PHvMeyx7TEtce2bMe4x6DEhMeix6/Hsce+xLXIgMiCx6bElmxvYWTHq8agxqfGica8dsWnxZthbmdsxYotMi4zNTYxOTQ0OcSUOTIzNMefyJ7Ij8awxrLIosW6xYPIpcinyKnIqzDIsTM5NcSSyLc5M8iwNcarXX0=">Truss Structure</a></li>
+        <li><a href="#eyJub2RlcyI6W8SAc2VyaWFsxIcxMDAxLCJ4xJEyNcSWecSHMzfEmyJzdXBwb3J0VHlwZcSHLTF9LMSKxIzEjsSQOsSSMDLElsSYOjLEoMScxIcyxJPElsSjxKXEp8SpxKvErTowxLHEs8SNxI/EkcSTM8S7xIc0xL8ixJ3Et8SaxYTEpMSmxKjEqsSsxIfFjMSyxKLEtMWQxLfEkzTFlDo2xZfFmcWCMMWcxYbFn8WJxaLFjcWlxY/EtsS4xKHEvDjFm8WYxJ7Fl8WFxZ7FiMWhOi0yxbfEi8W5xZEwNsWrNsWDxoA6xJ/EocaDxYfFoMWKxaPFjsS1xo03xaszNcWxxpPGlcWyxoTGmcW2XcSWbWVtYsSMxIbEiMSAxILEhDHGjcaPxIHEg2Uyxo00xbfGtGXGtsWoMMWqxrnEhMa8x4Mzxr/GuseCxLjFk8eGxrvGjcaJxaTHgMeNxJPEuseQx4jEuMSwx5THjMaNxJXHmcaex4vGtcaexJbHgMeaxJM2x6PHgca3x6bGuseoMDXHq8eWx7HHrseHxr3Hs8aNx4/Hp8eix53HpMeDxp/HoceDx5PGs8eex4nHtseRx4PHqsaqxKLFncWHxrHEiceQx5/ElnbEjHRpY8WnZsSPxIvHq8iTIsiVxKjImMWndHJ1Zciex4PEocihyJfImcS2yKXIp33IjGxvYWTIkMiFxITHrcigxacyx5hhbmdsxYoxLjU3MDc5NjMyxa05NDjJi8eqx77JhMSTyIF2yL3Iv8mByYPEkcmGyYjJismMyY7JismRyZPIsn0=">A Warren Truss Bridge</a></li>
+        <li><a href="#eyJub2RlcyI6W8SAc2VyaWFsxIcxMDAxLCJ4xJE3NcSWecSHM8SaxJZzdXBwb3J0VHlwZcSHLTF9LMSKxIzEjsSQOsSSMDLElsSYOjLEoCLEncS8MsSbIsSixKTEpsSoxKrErDowxLDEssSNxI/EkcSTM8S6xIc0xYLEnMSHMsWXxYTEo8SlxKfEqcSrxIfFjMSxxYTEs8WQxLbEkzTFlDrFlsWDxYDEn8WDxYXFnsWIxaHFi8WNxaXFj8S1xLfFg8S7xL3FrsSexL7FssWHxaDFisWjxY7EtMWRMDbFqzXFm8WAxZrFscWdxoPFicStxK9dxJZtZW1ixIzEhsSIxIDEgsSEMcaJxovEgcSDZTLGiTPFt8ahZcajxagwxZPGpsSExqnGsDTGrManxq/Et8WqxrPGqMakxrjGosaqxJbGrca1xLcyx4DGrsaJxLnGvceFxJM1x4jGuseOx4PGp8eNMMa3xaTGrceRxJTHk8a0xonHj8eYxrnGicSVx4zHin3Gl8WcxYbEp8aexInGvcakxJZ2xIx0aWPFp2bEj8SLx4jHriLHsMSnx7PFp3RydWXHucawx6PHvMeyx7TEtce2bMe4x6DEhMeix6/Hsce+xLXIgMiCx6bElmxvYWTHq8agxqfGica8dsWnxZthbmdsxYotMi4zNTYxOTQ0OcSUOTIzNMefyJ7Ij8awxrLIosW6xYPIpcinyKnIqzDIsTM5NcSSyLc5M8iwNcarXX0=">Truss Structure</a></li>
       </ul>
     </div>
   </div>
