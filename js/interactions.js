@@ -52,6 +52,7 @@ function bgClick(event) {
 
   if (mode == 'add-node-btn') {
     createNode(x, y);
+    recompute();
   }
 }
 
@@ -63,6 +64,7 @@ function nodeClick(event) {
       if (!isLeftClick(event) || event.ctrlKey) {
         deleteNode(node);
       }
+      recompute();
       break;
 
     case 'add-support-btn':
@@ -78,9 +80,9 @@ function nodeClick(event) {
       if (node.supportType & 2) {
         createSupport(node, true);
       }
+      recompute();
       break;
   }
-  recompute();
 }
 
 function memberClick(event) {
@@ -88,10 +90,10 @@ function memberClick(event) {
     case 'add-member-btn':
       if (event.which != 1) {
         deleteMember(members[this.dclSerial]);
+        recompute();
       }
       break;
   }
-  recompute();
 }
 
 function loadClick(event) {
@@ -99,10 +101,10 @@ function loadClick(event) {
     case 'add-load-btn':
       if (event.which != 1) {
         deleteLoad(loads[this.dclSerial]);
+        recompute();
       }
       break;
   }
-  recompute();
 }
 
 var ghostMember = null;
@@ -162,6 +164,7 @@ function nodeDragEnd(event) {
       }
 
       ghostMember.remove();
+      recompute();
       break;
 
     case 'add-load-btn':
@@ -170,9 +173,9 @@ function nodeDragEnd(event) {
       }
       ghostLoad.el.remove();
       ghostLoad.textEl.remove();
+      recompute();
       break;
   }
-  recompute();
 }
 
 function nodeDragMove(dx, dy, x, y, event) {
@@ -188,9 +191,13 @@ function nodeDragMove(dx, dy, x, y, event) {
         dy = cy - this.dclOY;
       }
 
-      this.attr({cx: cx, cy: cy});
-      node.x = cx;
-      node.y = cy;
+      var changed = (node.x != cx || node.y != cy);
+
+      if (changed) {
+        this.attr({cx: cx, cy: cy});
+        node.x = cx;
+        node.y = cy;
+      }
 
       _.each(node.members, function(member) {
         member.el.attr('path', memberPath(member.node1, member.node2));
@@ -207,6 +214,9 @@ function nodeDragMove(dx, dy, x, y, event) {
 
       this.dclLastDx = dx;
       this.dclLastDy = dy;
+
+      if (changed)
+        recompute();
       break;
 
     case 'add-member-btn':
@@ -229,8 +239,6 @@ function nodeDragMove(dx, dy, x, y, event) {
 
       break;
   }
-
-  recompute();
 }
 
 
