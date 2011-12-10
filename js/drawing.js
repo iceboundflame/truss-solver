@@ -65,10 +65,20 @@ function createNodeEl(x, y, s) {
   el.dclSerial = s;
   el.dclType = 'node';
 
-  el.drag(nodeDragMove, nodeDragStart, nodeDragEnd);
-  el.click(nodeClick);
-  rightClickify(el, nodeClick);
-  return el;
+  var interactEl = paper.circle(x, y, SIZES.nodeRadius*2);
+  interactEl.attr({fill: '#000', 'fill-opacity': 0.05});
+  interactEl.dclSerial = s;
+  interactEl.dclType = 'node';
+
+  interactEl.drag(nodeDragMove, nodeDragStart, nodeDragEnd);
+  interactEl.click(nodeClick);
+  rightClickify(interactEl, nodeClick);
+
+  var set = paper.set();
+  set.push(el, interactEl);
+  set.realEl = el;
+
+  return set;
 }
 
     function memberPath(node1, node2) {

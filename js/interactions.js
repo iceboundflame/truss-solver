@@ -114,12 +114,12 @@ function nodeDragStart(x, y, event) {
   var node = nodes[this.dclSerial];
   switch(mode) {
     case 'add-node-btn':
-      this.attr({'fill-opacity': 0.5});
+      node.el.realEl.attr({'fill-opacity': 0.5});
 
       this.dclLastDx = 0;
       this.dclLastDy = 0;
-      this.dclOX = this.attr('cx');
-      this.dclOY = this.attr('cy');
+      this.dclOX = node.x;
+      this.dclOY = node.y;
 
       break;
 
@@ -152,7 +152,7 @@ function nodeDragEnd(event) {
   var node = nodes[this.dclSerial];
   switch(mode) {
     case 'add-node-btn':
-      this.attr({'fill-opacity': 1});
+      node.el.realEl.attr({'fill-opacity': 1});
       break;
 
     case 'add-member-btn':
@@ -194,7 +194,7 @@ function nodeDragMove(dx, dy, x, y, event) {
       var changed = (node.x != cx || node.y != cy);
 
       if (changed) {
-        this.attr({cx: cx, cy: cy});
+        node.el.translate(dx-this.dclLastDx, dy-this.dclLastDy);
         node.x = cx;
         node.y = cy;
       }
@@ -221,6 +221,15 @@ function nodeDragMove(dx, dy, x, y, event) {
 
     case 'add-member-btn':
       var path = ghostMember.attr('path');
+
+      var hit = paper.getElementByPoint(event.clientX, event.clientY);
+      if (hit && hit.dclType == 'node' &&
+          nodes[hit.dclSerial] != node) {
+        dx = nodes[hit.dclSerial].x - node.x;
+        dy = nodes[hit.dclSerial].y - node.y;
+      }
+        console.log(dx + ","+dy);
+
       path[1] = ['l', dx, dy];
       ghostMember.attr('path', path);
       break;
