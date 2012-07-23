@@ -42,7 +42,11 @@ function startComputing() {
       return Math.atan2(dy, dx);
     }
 
-function recompute() {
+/**
+ * Set changing to true if user is still dragging a node. Slow computations
+ * will be skipped, and the displays will be cleared instead.
+ */
+function recompute(changing) {
   if (noCompute)
     return;
 
@@ -52,10 +56,22 @@ function recompute() {
   //////
 
   if (computeMode == 'forces') {
-    computeForces();
+    if (changing)
+      clearForceDisplays();
+    else
+      computeForces();
   } else if (computeMode == 'lengths') {
     computeLengths();
   }
+}
+
+function clearForceDisplays() {
+  _.each(supports, function(support) {
+    updateSupportLabel(support, '');
+  });
+  _.each(members, function(member) {
+    updateMemberLabel(member, '', COLORS.memberForceZero);
+  });
 }
 
 function computeForces() {

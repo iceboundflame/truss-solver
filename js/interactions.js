@@ -216,7 +216,7 @@ function nodeDragMove(dx, dy, x, y, event) {
       this.dclLastDy = dy;
 
       if (changed)
-        recompute();
+        recompute(true);
       break;
 
     case 'add-member-btn':
@@ -228,7 +228,6 @@ function nodeDragMove(dx, dy, x, y, event) {
         dx = nodes[hit.dclSerial].x - node.x;
         dy = nodes[hit.dclSerial].y - node.y;
       }
-        console.log(dx + ","+dy);
 
       path[1] = ['l', dx, dy];
       ghostMember.attr('path', path);
