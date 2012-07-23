@@ -91,47 +91,6 @@ function computeForces() {
   // the next row to populate
   var row = 0;
 
-
-  /*{
-    var coeffsSumX = zeros(nDims);
-    var coeffsSumY = zeros(nDims);
-    var coeffsSumMZ = zeros(nDims);
-    // for moment calculation, moment center is at 0,0 (upper left)
-    _.each(supports, function(support) {
-      idx = serialToIdx[support.serial];
-      if (support.vertical) {
-        coeffsSumY[idx] = -1;
-        coeffsSumMZ[idx] = support.node.x;
-      } else {
-        coeffsSumX[idx] = 1;
-        coeffsSumMZ[idx] = support.node.y;
-      }
-    });
-
-    var loadSumX = 0;
-    var loadSumY = 0;
-    var loadSumMZ = 0;
-    _.each(loads, function(load) {
-      loadSumX += load.compX;
-      loadSumY += load.compY;
-      loadSumMZ += load.compX * load.node.y;
-      loadSumMZ += load.compY * load.node.x;
-    });
-
-    matA[row] = coeffsSumX;
-    vecB[row] = -loadSumX;
-    ++row;
-
-    matA[row] = coeffsSumY;
-    vecB[row] = -loadSumY;
-    ++row;
-
-    matA[row] = coeffsSumMZ;
-    vecB[row] = -loadSumMZ;
-    ++row;
-  }*/
-
-
   _.each(nodes, function(node) {
     var coeffsSumX = zeros(nDims);
     var coeffsSumY = zeros(nDims);
@@ -187,7 +146,7 @@ function computeForces() {
       if (c != 0)
         str += "<td>+</td>";
 
-      if (matA[r][c] < 1e-5) {
+      if (Math.abs(matA[r][c]) < 1e-5) {
         str += "<td></td>";
         str += "<td></td>";
         str += "<td></td>";
@@ -205,26 +164,26 @@ function computeForces() {
 
   $('#console2').html(str);
 
+  var nEquations = matA.length;
 
   var vecXvalues;
   var vecXlabels;
-  if (nDims > 0) {
-    if (nDims == matA.length) {
-      // Matrix computation
-      // Ax = B
-      // x = (A^-1)B
+  if (nDims > 0 || nEquations) {
 
-      var matAinv = $M(matA).inv();
-      if (matAinv) {
-        vecXvalues = matAinv.multiply($V(vecB)).elements;
+    if (nDims === nEquations) { // || nDims < nEquations) {
+      // Ax = b
+      vecXvalues = solveSystem($M(matA), $V(vecB)).elements;
 
-        vecXlabels = [];
-        for (var i = 0; i < nDims; ++i) {
-          vecXlabels[i] = vecXvalues[i].toFixed(0) + " N";
-        }
+      vecXlabels = [];
+      for (var i = 0; i < nDims; ++i) {
+        vecXlabels[i] = vecXvalues[i].toFixed(0) + " N";
       }
     } else {
-      $('#console2').append('<p>Number of equations does not match number of unknowns</p>');
+      if (nDims > nEquations) {
+        $('#console2').append('<p>Underdetermined system: more unknowns than equations. Remove members or supports.</p>');
+      } else {
+        $('#console2').append('<p>Overdetermined system: more equations than unknowns. Add more members or supports.</p>');
+      }
     }
   }
 
@@ -275,3 +234,40 @@ function computeLengths() {
   });
 }
 
+
+/**
+ * Given matrix A, vector b, finds vector x such that Ax = b.
+ */
+function solveSystem(A, b) {
+  var M = A.augment(b);
+
+  // uses row operations to make the matrix upper-triangular
+  M = M.toUpperTriangular();
+
+  console.log(A.elements);
+  console.log(b.elements);
+  console.log(M.elements);
+
+  //
+  // Back-substitution for x.
+  //
+  var x = Vector.Zero(b.dimensions());
+  for (var i = M.rows(); i >= 1; --i) {
+    var val = M.e(i, M.cols()); // last column is a vector
+    var firstNonZeroColumn = null;
+    for (var j = 1; j <= M.cols() - 1; ++j) { // exclude last column
+      if (!firstNonZeroColumn && M.e(i,j) !== 0) { // FIXME float precision compare
+        firstNonZeroColumn = j;
+      } else if (firstNonZeroColumn) {
+        val -= x.e(j) * M.e(i,j);
+      }
+    }
+
+    val /= M.e(i,firstNonZeroColumn);
+    x.elements[firstNonZeroColumn - 1] = val; // N.B. one-indexed!
+  }
+
+  console.log(x.elements);
+
+  return x;
+}

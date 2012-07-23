@@ -2,7 +2,7 @@ var nodes = {};
 var members = {};
 var supports = {};
 var loads = {};
-var serial = 1000;
+var serial = 0;
 
 function resetModel() {
   try {
@@ -11,7 +11,7 @@ function resetModel() {
     _.each(nodes, function(node) {
       deleteNode(node); // will delete attached members, supports, loads
     });
-    serial = 1000;
+    serial = 0;
   } finally {
     startComputing();
   }
